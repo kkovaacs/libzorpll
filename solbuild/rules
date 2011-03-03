@@ -1,0 +1,38 @@
+#!/usr/local/bin/make -f
+
+STAMPDIR=solbuild/stamps
+
+all: binary
+
+binary: setup configure build install pkgpackage
+
+setup: $(STAMPDIR)/stamp-setup
+$(STAMPDIR)/stamp-setup:
+	mkdir solbuild/stamps || true
+
+	touch $@
+
+configure: $(STAMPDIR)/stamp-configure
+$(STAMPDIR)/stamp-configure:
+	CFLAGS="-mcpu=v9 -mtune=v9" CPPFLAGS="-I/opt/zorp/include" LDFLAGS="-L/opt/zorp/lib" ./configure --enable-shared \
+		--prefix=/opt/zorp
+
+	touch $@
+
+build: $(STAMPDIR)/stamp-build
+$(STAMPDIR)/stamp-build:
+	make
+	touch $@
+
+install:
+	dir=`pwd`; make install DESTDIR=$$dir/solbuild/libzorpll
+        
+pkgpackage:
+	( cd solbuild/libzorpll ; sh ../prototype-maker.sh ; sh ../pkgmaker.sh )
+
+
+clean:
+	rm -rf solbuild/stamps || true
+	rm -rf solbuild/libzorpll || true
+	make clean
+

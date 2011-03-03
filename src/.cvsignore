@@ -1,0 +1,6 @@
+*.lo
+libzorpll.la
+Makefile.in
+Makefile
+.deps
+.libs

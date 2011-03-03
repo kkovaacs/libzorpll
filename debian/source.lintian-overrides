@@ -1,0 +1,2 @@
+not-using-po-debconf
+#Only the orig.tar.gz contains template files. The upstream fix is in progress.

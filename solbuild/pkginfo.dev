@@ -1,0 +1,10 @@
+PKG=ZOSzlldev
+NAME="libzorpll static libraries and development headers"
+VERSION=3.9.0.1
+ARCH=sparc
+CATEGORY=library
+CLASSES="library headers none"
+BASEDIR=/
+VENDOR="Balabit IT Ltd."
+EMAIL="zorpos@balabit.com"
+DESC="libzorpll3.9-0 development package"

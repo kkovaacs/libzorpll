@@ -1,0 +1,9 @@
+Template: zorplib/admin-email
+Type: string
+Default: NONE
+Description: Please specify the administrator's email.
+ Various Zorp applications are able to send a notification e-mail to an
+ administrator's address in case of an unexpected process termination. If you
+ don't wish to receive such notifications, leave this field blank or specifiy
+ NONE.
+

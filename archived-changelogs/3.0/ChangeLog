@@ -1,0 +1,2100 @@
+2006-03-20  Balazs Scheidler <bazsi@balabit.hu>
+
+	* VERSION: bumped to 3.0.6.5.1
+
+	* src/thread.c (z_thread_init): query the value for RLIMIT_STACK and
+	use g_thread_create_full() to specify stack size, it does not work
+	for thread pools (fixes: #8587)
+
+2006-02-23  Pal Tamas <folti@balabit.hu>
+
+	*  src/makefile.msc: Added instruction to add pdb file to windows package.
+
+	*  winbuild/build.bat.in: Both normal and dbg package contain the debug
+	symbols in the debug directory. Removed unnecessery CR's. Fixed exit's
+	parameter.
+
+
+
+2006-02-23  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/ssl.c (z_ssl_session_unref): check if self is NULL,
+	(z_ssl_session_new): fixed heap corruption on win32 as the store
+	passed from the caller is not to be used as self->crl_store as it
+	will definitely cause a segfault
+
+2006-02-10  Simon Gabor <fules@balabit.hu>
+
+	* src/zorp/log.h: z_enter(), z_leave(), z_cp() are now wrappers
+        around z_session_*(), so unified handling is possible, these latter
+        functions do the indenting itself
+        * src/log.h: indentation helper function z_log_trace_indent() added
+        * src/misc.c: duplicate code from z_data_dump() and
+        z_format_data_dup() separated into z_hexdump(), the last (partial)
+        line of the dump is also aligned
+
+2006-02-09  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/ssl.c (z_ssl_session_free): fixed compile error in last leak
+	fix (fixes: #7458),
+	(z_ssl_password): fixed warnings on unused arguments
+
+2006-02-08  Attila SZALAY <sasa@balabit.hu>
+
+	* src/ssl.c (z_ssl_session_free): Free crl_store. (fixes: #7458)
+
+	* debian/control.in: Added zlib1g-dev build dependency. (fixes: #7460)
+
+2005-12-06  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* configure.in: bumped version number to 3.0.6.4.2
+
+	* src/ssl.c (z_ssl_session_new): don't make the CRL directory
+	verification fatal (fixes: #7556)
+
+2005-12-06  Simon Gabor <fules@balabit.hu>
+
+        * src/process.c: null value of pidfile handled in 
+	z_process_daemonize (fixes #6725)
+
+2005-12-05  Balazs Scheidler <bazsi@balabit.hu>
+
+	* configure.in: bumped to 3.0.6.4.1
+
+2005-12-05  Simon Gabor <fules@balabit.hu>
+
+        * src/process.c (z_process_daemonize): the daemon process now runs
+        in the dir of the pidfile (fixes #6725)
+
+2005-12-02  Attila SZALAY <sasa@balabit.hu>
+
+        * src/ssl.c (z_ssl_destroy): Do not frees mutexes, because threads
+        might need them after z_ssl_destroy. (fixes: nobug)
+
+        * src/ssl.c (z_ssl_password): New function. Log a message when
+        password needed to loading a keyfile. (fixes: #7656)
+        (z_ssl_session_new): Set password loader. (fixes: #7656)
+
+        * src/ssl.c (z_ssl_password): Fixed return value.
+        (z_ssl_password): Raise log level into CORE_ERROR 1.
+
+2005-12-02  Balazs Scheidler <bazsi@balabit.hu>
+
+        * src/ssl.c (z_ssl_session_new): added access checks and log
+        messages in case of failure when a CA/CRL directory cannot be used
+        (fixes: #7556)
+
+2005-12-02  Balazs Scheidler <bazsi@balabit.hu>
+
+        * src/connect.c (z_io_connect_new): added a log message when
+          z_bind() fails
+
+2005-11-24  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/misc.c (z_zorplib_version_info): increase local buf to 512
+	bytes as the version string did not fit.
+
+2005-11-03  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* configure.in: bumped to 3.0.6.4
+
+2005-10-07  Simon Gabor <fules@balabit.hu>
+
+        * lib/error.c, lib/zorp/error.h: typo fixed in win-specific code
+        (fixes #6444)
+
+        * lib/zorp/error.h: added another missing constant in the
+        win-specific code (fixes #6444)
+
+        * src/zorp/error.h, src/streamfd.h: On win32 now fails with error
+        message instead of silently covering the error (fixes #6444)
+
+2005-09-26  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* configure.in: bumped to 3.0.6.3.1
+
+2005-09-26  Attila SZALAY <sasa@balabit.hu>
+
+        * connect.c (z_io_connect_cancel): Unlock the connect lock before
+        calling g_source_destroy. (fixes: #6615)
+
+2005-09-26  SZALAY Attila  <sasa@balabit.hu>
+
+        * configure.in: Added -Werror to CFLAGS when compiled without debug.
+
+        * *.c: Fixed some compilation warnings. (fixes: #5267)
+
+2005-09-26  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/streamfd.c (z_stream_fd_ctrl_method): fixed typo & warning
+	in parentheses
+
+2005-09-20  Attila SZALAY  <sasa@balabit.hu>
+
+	* lib/log.c: Fixes some signedness problem. (fixes: nobug)
+
+	* configure.in: Keep version number between recompiles. (fixes: nobug)
+
+	* configure.in: Disable crypt in FreeBSD because crypt.h no found.
+	Use own crypt implementation instead.
+
+	* src/socket.c: Define MAGIC_FAMILY_NUMBER instead of using fix 999
+	as magic family number. Change this number to 111 to fit unsigned
+	short (fixes: nobug)
+
+	* src/zorp/io.h: Mark unused parameters as unused. (fixes: nobug)
+
+2005-09-20  Krisztian Kovacs  <hidden@balabit.hu>
+
+	* src/stackdump.c: don't compile stackdump-related functions
+	unless ZORPLIB_ENABLE_STACKDUMP is true (fixes: #6979)
+
+2005-09-20  Balazs Scheidler  <bazsi@balabit.hu>
+
+	* src/error.c (z_errno_translate): added support for ENOTSOCK (fixes: #6444)
+
+	* src/streamfd.c (z_stream_fd_ctrl_method): use z_errno_is for error
+	detection, accept ENOTSOCK error as not-broken (fixes: #6444)
+
+	* src/stream.h (z_stream_broken): new function, returns whether
+	connection identified by the specified stream is broken
+
+	* src/streamfd.c (z_stream_fd_ctrl_method): add support for
+	Z_CTRL_GET_BROKEN message, and use recv and MSG_PEEK to determine
+	whether the connection was broken
+
+2005-08-17  Balazs Scheidler  <bazsi@balabit.hu>
+
+	* configure.in: bumped to 3.0.6.3
+
+2005-08-05  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/log.h (z_log_data_dump): new function backported from 3.1
+	needed by the ZCode backport
+
+	* src/misc.c (z_format_data_dump): -"-
+
+	* src/ssl.c (z_ssl_verify_crl): fixed a possible EVP_PKEY
+	reference leak
+
+2005-07-29  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* configure.in: bumped to 3.0.6.2.1
+
+2005-07-29  Attila SZALAY <sasa@balabit.hu>
+
+        * src/connect.c, src/io.c: Fixed some documentation issue.
+
+        * src/misc.c (z_charset_parse): Fixed state machine to be able to
+        enable \ char. (fixes: #6661)
+
+        * tests/test_valid_chars.c: Created testcases for charset
+        validation.
+
+2005-07-29  Simon Gabor <fules@balabit.hu>
+
+        * configure.in: checking of zlib1g-dev added (fixes #6464)
+
+2005-04-26  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.6.2
+
+2005-04-13  ABONYI Balint <abi@balabit.hu>
+
+	* makefile.msc, winbuild/build.bat.in: fixed compiler error
+	handling in zbs (fixes: #6612)
+
+2005-04-10  SZALAY Attila  <sasa@sasa.home>
+
+	* Bumped to test version 3.0.6.1.1
+
+2005-04-06  Balazs Scheidler  <bazsi@balabit.hu>
+
+	* src/log.c (z_send_syslog): implement log message escaping,
+	(z_log_init): understand ZLF_ESCAPE and enable log message
+	escaping if that bit is present
+
+	* src/zorp/log.h: added ZLF_ESCAPE, fixed the value for
+	ZLF_WINDEBUG
+
+2005-03-31  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.6.1
+
+2005-03-03  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.6.0.4
+
+2005-03-03  Balazs Scheidler  <bazsi@balabit.hu>
+
+	* src/misc.c: added case insensitive hash functions
+
+2005-03-03  ABONYI Balint  <abi@balabit.hu>
+
+	* added EADDRINUSE to win32 defines (as WSAEADDRINUSE)
+
+	* src/log.c: added loglevel checking to zorplib under win32
+	(fixes: #5844)
+
+2005-02-28  Balazs Scheidler <bazsi@balabit.hu>
+
+        * src/connect.c (z_io_connect_start_internal): fixed Cannot
+	connect error message as it displayed the same string for both the
+	local and remote endpoints
+
+        * src/sockaddr.c (z_sockaddr_inet_bind_prepare): do not set
+	SO_REUSEADDR for ZSF_LOOSE_BIND binds (fixes: #1088)
+
+        * src/socket.c (z_do_ll_bind): only loop bind() calls if errno ==
+	EADDRINUSE (e.g. the port is reserved) (fixes: #1088)
+
+        * src/log.c (z_log_init): store initial logspec to the
+	log_spec_str
+        (fixes: #4667)
+
+2005-02-28  ABONYI Balint <abi@balabit.hu>
+
+	* src/streamfd.c: fixed winsock event creation and destroy, now
+	only one per stream (fixes: #6303)
+
+2005-02-28  Balazs Scheidler <bazsi@balabit.hu>
+
+	* src/ssl.c, src/stackdump.c: fixed three strict-aliasing warnings
+	(fixes: #6195)
+
+	* src/zorp/zobject.h (z_object_check_compatible): added
+	G_GNUC_UNUSED to the class parameter
+
+2005-02-28  Attila SZALAY <sasa@balabit.hu>
+
+	* src/random.c: Return with FALSE when dev/(u|)random cannot
+	opened.
+	(fixes: #4879)
+
+	* lib/memtrace.c: Memory allocation will be traced only if an
+	eniroment variable is set. (fixes: #5829)
+
+	* *.c: Fixed some compilation warning. (fixes: #5267)
+
+	* random.c, sockaddr.c: Fixed signedness and size problems.
+        (fixes: #5267)
+
+2005-02-25  Sandor Geller  <wildy@balabit.hu>
+
+        * zorplibll.spec: renamed the libzorpll-devel RPM package to
+	libzorpll-dev (fixes: #6343), fixed branching problems in dev
+	packages (fixes: #6343)
+
+2005-02-18  Sandor Geller  <wildy@balabit.hu>
+
+        * solbuild/*: from now we create two packages, ZOSlibzll and
+	ZOSzlldev; ZOSlibzll contains the stripped libzorpll library,
+	ZOSzlldev contains the headers and the static library
+
+        * configure.in: solbuild/pkginfo replaced with
+	solbuild/pkginfo.lib and solbuild/pkginfo.dev files
+
+2005-02-08  ABONYI Balint  <abi@balabit.hu>
+
+	* version info in rc files can be only 4 numbers long, it is now
+	trimmed to this lengths.
+
+	* Added winbuild to libzorpll.
+
+2005-02-02  Balazs Scheidler  <bazsi@balabit.hu>
+
+	* src/connect.c (ZIORealConnect): changed structure to avoid
+	possible strict-aliasing problem, instead of listing the same
+	members in the ZIOConnect and ZIORealConnect structures,
+	ZIORealConnect uses ZIOConnect and all references are
+	updatedaccordingly.
+
+	* src/listen.c (ZIORealListen): -"-
+
+	* src/zorp/zobject.h (ZClass): changed the type for funcs field to
+	ZObjectFuncs to make it possible to avoid casts when statically
+	initializing ZClass structures. (fixes: #6124)
+
+	* src/*.c: adapted to the ZClass change (fixes: #6124)
+
+2005-01-29  SZALAY Attila  <sasa@balabit.hu>
+
+	* src/log.c (z_log_spec_init): Check if logspec_str NULL.
+
+2005-01-28  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.6.0.2
+
+2005-01-28  Sandor Geller  <wildy@balabit.hu>
+
+	* configure.in: set ZORPLIBLL_VERSION to (initial) VERSION,
+	pkgconfig works again
+
+2005-01-27  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.6.0.1
+
+2005-01-27  Sandor Geller  <wildí@balabit.hu>
+
+	* Makefile.am: added zorplibll.spec to EXTRA_DIST
+
+	* zorplibll.spec.in: created (fixes: #6005)
+
+	* configure.in: updated according to the configure.in in the
+	libzas package; added zorplibll.spec to the list of the generated
+	files
+
+	* debian/Makefile.am, debian/control.in,
+	debian/libzorpll.shlibs.in.in, solbuild/rules.conf.in,
+	src/Makefile.am: updated to use the new exported variables
+
+	* debian/control.in: changed the name of the dbg package from
+	libzorpll-dbg to libzorpll3.0.5-dbg
+
+	* renamed debian/rules to debian/rules.in
+
+	* debian/rules.in: changed libzorpll-dbg to
+	libzorpll@BINARY_BRANCH@-dbg
+
+	* debian/Makefile.am: added rules to the generated files
+
+2005-01-25  Balazs Scheidler  <bazsi@balabit.hu>
+
+	* src/log.c (z_log_enabled_len): cached values are stored in the
+	mapped_tags cache under the protection of the lock to avoid a
+	possible race which would cause an invalid value to be cached, the
+	other part which causes some messages to be written/dropped
+	because of the changing log-spec is not protected by the same lock
+	but its effects are not so severe (fixes: #5392),
+	(z_log_change_logspec): store the unparsed string form of a
+	logspec to make it possible retrieve it later (fixes: #5392)
+
+	* src/log.c (z_log_clear_caches): also zerofill the maptag cache
+	(fixes: #5392)
+
+	* src/log.c (ZLogSpec, ZLogSpecItem): new structures to represent
+	parsed --log-spec argument,
+	(various globals): made them static, their access is restricted
+	through a couple of new functions (z_log_change_* and friends)
+	(z_log_spec_init, z_log_spec_destroy, z_log_spec_eval): new
+	functions to work on the new representation of ZLogSpec, (fixes:
+	#5392)
+	(z_log_enabled_len): renamed z_log_enabled with an addition length
+	parameter, added support for maptag cache, and the new ZLogSpec
+	representation (fixes: #5392)
+
+	* src/log.h: removed Zorp specific defines, added z_log_enabled()
+	macro for source compatibility (fixes: #5392)
+
+	* src/log.c (z_log_change_verbose_level, z_log_change_logspec):
+	new functions to change logging options at run-time (fixes: #4667)
+
+2005-01-06  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.5.3
+
+	* src/zobject.c (z_object_is_subclass): fixed compatibility check
+	for non-debug builds.
+
+2004-12-22  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* Bumped to version 3.0.5.2
+
+2004-12-21  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.5.1.2
+
+	* src/zorp/io.h: Fixed dummy definition of z_fd_get_peer_tos,
+	z_fd_get_our_tos and z_fd_set_our_tos, because empty defines
+	cannot be used in ifs.
+
+	* Bumped to version 3.0.5.1.1
+
+2004-12-14  Balazs Scheidler  <bazsi@balabit.hu>
+
+        * src/log.c (z_send_syslog): do not append a trailing \0 character
+	to log messages (fixes: #5623)
+
+2004-12-14  ABONYI Balint <abi@balabit.hu>
+
+	* src/ssl.c: fixed a g_snprintf in z_ssl_get_error_str (fixes:
+	#5843)
+
+2004-12-08  Sandor Geller  <wildy@balabit.hu>
+
+	* debian/control.in: changed Provide and Conflict from libzorpll*
+	to virtual-libzorpll*, binary branches no more provide
+	libzorpll3.0.5 package. (fixes: #5770)
+
+	* debian/control.in: added versioned libzorpll* dependency to the
+	libzorpll*dbg package. (fixes: #5770)
+
+	* debian/control.in: changed provided and conflicting package
+	names from libzorpll-dev to virtual-libzorpll-dev. (fixes: #5770)
+
+2004-12-03  Attila SZALAY  <sasa@balabit.hu>
+
+	* lib/memtrace.c (z_malloc): Fixed the order of value assign and
+	using it's value. (fixes: #5290)
+
+	* configure.in: Set enable-debug to false by default.
+
+2004-10-22  Marton Illes  <marci@balabit.hu>
+
+	* src/*.c: log message updates
+
+2004-10-19  bazsi  <bazsi@balabit.hu>
+
+	* Bumped to version 3.0.5.1
+
+2004-10-14  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* Bumped to version 3.0.5.0.4
+
+2004-10-13  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* configure.in: added detection code for SOL_IP, IP_PKTOPTIONS and
+	IP_RECVTOS, also added --enable-tos argument and autodetection
+	code which defines ZORPLIB_ENABLE_TOS if the results are positive
+	(fixes: #5234)
+
+2004-10-12  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.5.0.3
+
+2004-10-08  Balazs Scheidler  <bazsi@bzorp.balabit>
+ 
+	* src/io.c (z_fd_get_peer_tos): fixed CMSG iteration, the buffer
+	length was set to 1 instead of the value returned by the kernel
+
+	* Bumped to version 3.0.5.0.2
+
+	* src/listen.c, src/connect.c: finalized arguments, session_id is
+	first, everything else follows
+
+2004-10-07  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.5.0.1
+
+2004-10-07  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/connect.c: added ToS handling
+
+	* src/io.c: added ToS manipulation functions
+
+2004-10-06  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* debian/control.in: fixed maintainer, removed provides: libzorpll
+
+	* debian/Makefile.am: fixed binary name generation (for .files and
+	.shlibs files)
+
+2004-10-05  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* src/connect.c: add session_id to ZIOConnect object
+        
+	* src/listen.c: add session_id to ZIOListen object
+
+2004-09-24  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* configure.in & Makefiles & debian/: changed build system to make
+	it possible to create binaries in various BINARY_BRANCH-es)
+
+2004-09-21  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/streamline.c (z_stream_line_get_copy): when the line does
+	not fit into the target buffer, return G_IO_STATUS_AGAIN with
+	line_len != 0; also added a FIXME about this hack
+
+2004-09-16  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.0.4
+
+2004-09-16  Sandor Geller  <wildy@balabit.hu>
+
+	* debian/control.in: removed Conflicts: libzorpll from
+	the libzorpll-dev package
+
+2004-09-14  Sandor Geller  <wildy@balabit.hu>
+
+	* debian/control.in: removed Conflict and Replaces fields from
+	the libzorpll-dbg package
+
+2004-09-07  Sandor Geller  <wildy@balabit.hu>
+
+	* debian/control.in: added zlib1g-dev to the build
+	dependancies; added Conflicts: libzorpll Replaces: libzorpll
+	to successfully upgrade from the older versions
+
+2004-09-03  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.0.3.4
+
+2004-08-24  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/crypt.c (md5_crypt): added md5 crypt support for platforms
+	which do not support it,
+	(z_crypt): added three conditional version, one for platforms
+	which support md5 + des based crypt, one which has a crypt but
+	does not support md5 crypt and a third on platforms which do not
+	support crypt at all (e.g. win32) (fixes: #2811)
+
+	* tests/zcrypt.c: new file to test the new md5 based crypt
+	function
+
+2004-08-18  Balazs Scheidler  <bazsi@balabit.hu>
+
+	* src/log.c: use g_strlcpy() instead of a couple of strcpy(),
+	nothing important, just to be safe
+
+	* src/memtrace.c: use g_snprintf instead of sprintf just to be
+	safe (boundchecking was correct previously)
+
+	* src/registry.c: use g_strlcpy instead of unguarded strncpy(),
+	nothing important registry is only used internally
+
+	* src/sockaddr.c: use g_strlcpy instead of strncpy and NUL
+	setting, nothing really important, but shortens the code
+
+2004-08-18  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.0.3.2
+
+2004-08-18  bazsi  <bazsi@(none)>
+
+	* configure.in, src/Makefile.am: fixed automake 1.7 and autoconf
+	2.59 related problems
+
+	* src/log.c (z_send_syslog): use syslog("%s", msg) instead of
+	referencing msg directly for non-Linux platforms
+
+2004-08-11  Sandor Geller  <wildy@balabit.hu>
+
+	* solbuild/prototype-maker.sh: removed /opt from the prototype
+
+2004-08-05  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.0.3.1
+
+2004-08-03  Sandor Geller  <wildy@balabit.hu>
+
+	* solbuild/admin: added
+
+	* solbuild/pkgmaker.sh: removed stdout, stderr redirections
+
+	* solbuild/prototype-maker.sh: add the admin file to the package
+
+	* solbuild/Makefile.am: added admin file
+
+2004-07-29  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/streamline.c: cleaned up ZRL_NUL_NONFATAL handling (no
+	functional change)
+
+2004-07-28  Sandor Geller  <wildy@balabit.hu>
+
+	* solbuild/pkgmaker.sh: clean up the spool after the package
+	creation
+
+2004-07-27  Sandor Geller  <wildy@balabit.hu>
+
+	* solbuild/pkgmaker.sh: include rules.conf; changed the FILENAME
+	prefix to the prefix which the .tar.gz package uses; compress the
+	native Solaris package with gzip
+
+2004-07-26  Sandor Geller  <wildy@balabit.hu>
+
+	* solbuild/pkginfo.in, solbuild/pkgmaker.sh,
+	solbuild/prototype-maker.sh: added native Solaris packaging
+
+	* solbuild/Makefile.am: changed EXTRA_DIST to include the files
+	mentioned above
+
+	* solbuild/rules: added pkgpackage target which is included in the
+	binary target too
+
+	* configure.in: added solbuild/pkginfo to AC_OUTPUT
+
+2004-07-19  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.0.3
+
+2004-07-08  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.0.2.3
+
+2004-07-01  <bazsi@hp-ia64.balabit>
+
+	* Fixed a couple of 64bit cleanness issues
+
+2004-06-21  SZALAY Attila  <sasa@balabit.hu>
+
+	* src/zorp/misc.h (z_decref): Introduce new inline functions to
+	increment and decrement reference counts with bounce checking.
+
+2004-06-17  SZALAY Attila  <sasa@balabit.hu>
+
+	* src/streamline.c: If enabled to split line then if gived buffer
+	length not enough to receive the readed line, then split it.
+
+2004-06-03  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.0.2.2
+
+	* src/stream.c (z_stream_context_destroy): remove of freeing
+	context, because it'is not allocated here.
+
+2004-06-01  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.0.2.1
+
+2004-06-01  ABONYI Balint <abi@balabit.hu>
+
+	* src/crypt.c: fixed crypt under win32
+
+2004-05-22  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* integrated log message documentation by Martin
+
+2004-05-21  ABONYI Balint <abi@balabit.hu>
+
+	* src/socketsource.c, socket.c, errors.h: some Win32 fixes
+	(ccompiler directives change)
+
+2004-05-20  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* src/crypt.c: include zorplib.h to be able to use configuration
+	flags
+        
+2004-04-15  ABONYI Balint <abi@balabit.hu>
+
+	*src/log.c,/src/zorp/log.h: changed logging under win32, if
+	ZLF_SYSLOG is set then it logs messages to
+	$windir\debug\syslog_tag.log . Added ZLF_WINDEBUG, it uses the
+	windows debug messaging, usable by debuggers.
+
+2004-05-18  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/misc.c: broken out z_crypt() function to a separate crypt.c
+	to make it easier to support multiple platforms (Win32 does not
+	have a crypt() function)
+
+2004-05-11  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/socket.c: fixed IP option parsing (NOOP was repeated
+	indefinitely) (fixes #3926)
+
+2004-05-07  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/streamline.c: added explanatory log messages to error cases
+	(fixes #3890)
+
+2004-05-03  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0.0.2
+
+2004-04-27  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/listen.c, src/connect.c: moved the previously internal 'fd'
+	member to public part
+
+	* src/streamgzip.c, src/streamfd.c: fixed 64bit issues
+
+	* src/stackdump.c: include <execinfo.h> for non-x86 platforms
+	(Linux-IA64)
+
+2004-04-15  Balint Abonyi   <abi@balabit.hu>
+
+	* src/connect.c: removed some win32 defines. Fixed bug: 2970
+
+2004-04-05  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* solbuild/rules, solbuild/rules.conf.in: new files to make it
+	possible to automatically build under solaris
+
+2004-04-02  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/streamline.c (z_stream_line_watch_dispatch): instead of
+	always calling the read callback for both PRI and normal data,
+	call the read callback when want_read is true and call the pri
+	callback when want_pri is null
+
+	* src/ssl.c (z_ssl_init): fixed dynamic engine loading, it
+	previously worked with statically builtin modules only
+
+
+	* src/sockaddr.c (z_sockaddr_inet_bind_prepare): change sock_flags
+	type to guint32 from gboolean
+	
+	* src/streamgzip.c (z_stream_gzip_watch_dispatch): add default
+	FALSE value to rc variable (was uninitalized)
+	
+	* src/log.[ch] (z_log_enable_syslog): add const qualifier to
+	parameter
+	
+2004-03-29  SZALAY Attila  <sasa@balabit.hu>
+
+	* src/log.c (z_log_enable_syslog): New function (moved from
+	z_log_init) to start syslog Bug: #2827
+	(z_log_enable_stderr_redirect): New function (moved from
+	z_log_init) to start stderr catching and redirecting to syslog
+	Bug: #2827
+
+2004-03-23  SZALAY Attila  <sasa@balabit.hu>
+
+	* src/streamline.c: Set pri callback in child stream. Setting pri
+	callback is useless, but I think it's OK Bug: #3327
+
+2004-03-12  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 3.0beta1
+
+2004-03-09  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* configure.in: changed version number to 3.0.0.0 in the
+	preparation of the stable 3.0 branch
+
+2004-02-18  SZALAY Attila  <sasa@balabit.hu>
+
+	* src/log.c (z_log_register_class): Copy glob to temp variable and
+	not change logspec. Bug: #3112
+
+2004-02-06  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/sockaddr.c: this was not adapted to sock_flags previously,
+	did the transition (bind_prepare & bind functions did not have the
+	sock_flags argument)
+
+2004-02-11  SZALAY Attila  <sasa@balabit.hu>
+
+	* src/thread.c (z_pt_thread_new): Remove stack size setup. Zorp
+	set it in more generic way.
+
+2004-02-10  SZALAY Attila  <sasa@balabit.hu>
+
+	* src/log.c (z_log_init): Check if thread creation failed and
+	handle it. Bug: #2098
+
+2004-02-06  SZALAY Attila  <sasa@balabit.hu>
+
+	* src/stream.c (z_stream_save_context): Save timeout. Closes:
+	#2128
+
+2004-02-02  Balint Abonyi   <abi@balabit.hu>
+
+	* src/streamfd.c: removed g_io_channel_set_flags from
+	z_stream_fd_ctrl_method in win32 builds, because its not
+	implemented in glib, and it shows a warning
+
+2004-01-26  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/socket.c: support ZSF_LOOSE_BIND in the fallback bind
+	function (e.g. allocate a port in the same port range)
+
+2004-01-20  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/streamline.c: added NUL as a possible EOL character
+	(ZRL_EOL_NUL)
+
+	* lib/ssl.c: added ENGINE initialization
+
+	* configure.in: added --enable-ssl-engine parameter (autodetected
+	when a new enough OpenSSL version is present)
+
+2004-01-15  SZALAY Attila  <sasa@balabit.hu>
+
+	* src/thread.c (z_tp_thread_new): Inicialize error variable to
+	NULL.
+
+2004-01-09  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/stream.c: implemented z_stream_extra_*() family of functions
+	to make it possible to save|restore stream specific context,
+	removed explicit nonblocking mode saving (rely on ZStreamFD to do
+	that)
+
+	* src/streamfd.c: implemented nonblocking state save|restore using
+	the z_stream_extra functions
+
+2004-01-09  SZALAY Attila  <sasa@balabit.hu>
+
+	* Bumped to version 2.2.3.0
+
+	* src/process.c (z_process_failed): Exit only if caller function
+	explicit want it. (API Changed!)
+
+2004-01-07  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* debian/control: added dev package dependencies to libzorpll-dev
+
+2003-12-08  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* src/streamgzip.c: fix typo in prepare and dispatch
+	
+2003-12-02  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/ssl.c: reverted change wrt allowing certificates when a
+	local issuer certificate is not found, it does not solve our
+	direct problem and weakening the verification is not good in
+	general
+
+2003-12-02  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* src/parser.c: increase verbose level of debug messages to 7
+	
+2003-11-26  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/log.c (z_log_enabled): do not use logtag hash if logspec is
+	NULL
+
+	* src/listen.c, src/connect.c: adapted to the sock_flags change
+
+	* src/socket.c, src/zorp/socket.h: added a new sock_flags
+	parameter to every socket call, added all previously flag like
+	arguments to this set (both source & binary incompatible change
+	!!!)
+
+	* src/log.c: do not log all messages at startup (before z_log_init
+	is called), only those which have a verbosity <= verbose_level
+
+	* src/zorp/stream.h: changed Z_STREAM_MAX_NAME to 128 chars,
+	backport requires a binary incompatible release!
+
+2003-11-12  Szalay Attila  <sasa@mochrul.balabit>
+
+	* Implement GZip capable stream.
+
+2003-06-23  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* src/log.c: move GMutex and GPrivate to their static pairs
+	
+2003-11-06  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/log.c: implemented less contented locking (introduced logtag
+	hash pool, and each thread uses a separate hashtable)
+
+	* src/thread.c: fixed language of the thread creation failure
+	message, fixed warning in g_clear_error invocation
+
+2003-10-29  Szalay Attila  <sasa@mochrul.balabit>
+
+	* src/thread.c (z_tp_thread_new): Write out an error message when
+	using threadpool and thread creation failed.
+
+2003-10-17  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/zorp/zobject.h (z_object_check_comatible): accept NULL as a
+	compatible pointer
+
+2003-10-13  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/streamline.c: fixed an error case with CRLF terminated lines
+	where the CR is missing (erroneously the buffer was cleaned and
+	G_IO_STATUS_AGAIN was returned instead of G_IO_STATUS_ERROR)
+
+	* src/streamfd.c: do not use the blocking timeout in
+	z_stream_wait_fd if the stream is in nonblocking mode
+
+	* src/log.c, src/zorp/log.h: the verbosity level is checked
+	earlier (in the z_log macro instead of in the z_logv function) to
+	avoid having to call functions embedded in the argument list
+
+2003-10-10  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/zobject.c: do not really check class inheritence when
+	running in non-debug mode
+
+2003-10-09  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/thread.c: if thread creation failed, decrement the thread
+	counter
+
+	* src/process.c (z_process_daemonize): added progname argument to
+	make it possible to report program name in error messages, use
+	fprintf instead of z_log (API incompatible change)
+
+	* src/process.c (z_process_fail): exit instead of silently failing
+	when z_process_daemonize was not called
+
+2003-10-06  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/stream.c: z_stream_{save|restore}_context now saves the
+	nonblocking state of streams
+
+2003-10-02  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/socket.c, src/sockaddr.c: introduced 'loose' binding, this
+	means that we only want to make sure that a port is allocated in
+	the same category as the port number in the supplied ZSockAddr
+	argument, but otherwise we don't care the port number. This change
+	changed a couple of internal APIs and interfaces, though user need
+	not be changed (as a z_bind2 was introduced instead of adding a
+	new argument to z_bind)
+
+2003-09-30  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/ssl.c: changed ceritificate verification callback, accept
+	certificates with incomplete chains when at least one subordinate
+	CA is trusted (this way we don't have to trust the root CA when
+	trusting a subordinate is enough)
+
+2003-09-29  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/*.c: added a lot of function comments
+
+2003-09-25  Szalay Attila  <sasa@mochrul.balabit>
+
+	* debian/control: Change libzorpll-dev and libzorpll-dbg section
+	to libdevel, according the debian changes.
+
+2003-09-25  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/streamline.c: new function z_stream_line_unget, a more
+	general version of z_stream_line_unget_line (needed to support
+	correct HTTP/0.9 fallback in HTTP)
+
+2003-09-24  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/Makefile.am, src/zorp/Makefile.am: removed freeq.c and
+	freeq.h
+
+	* configure.in: removed gobject from dependencies
+
+2003-09-11  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/stackdump.c: do not use backtrace() if it is not available
+
+	* src/log.c: fixed warnings in the libc based syslog code
+
+	* configure.in: added detection of backtrace() function
+
+2003-09-10  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/log.c: renamed z_close_syslog to z_close_syslog_internal,
+	new z_close_syslog function which does not take arguments
+
+	* src/*.c: changed all occurences of printf("%m") to printf("%s",
+	g_strerror(errno))
+
+	* configure.in: autodetect whether to use the syslog implementation in the libc
+
+	* src/log.c: added alternate libc based syslog implementation (to
+	be used on Solaris)
+
+2003-09-04  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/parser.c: added <string.h> to includes
+
+	* configure.in: exported OPENSSL_CPPFLAGS
+
+	* zorplibll.pc: added OPENSSL_CPPFLAGS to Cflags section
+
+2003-09-03  Szalay Attila  <sasa@mochrul.balabit>
+
+	* src/log.c: Lock class_hash locks when destroy or recreate it.
+
+2003-09-02  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* configure.in: autodetect SSL libraries and headers in
+	non-standard location
+
+2003-09-01  Balazs Scheidler  <bazsi@bzorp.balabit>
+
+	* src/stream.c (z_stream_context_destroy, z_stream_save_context,
+	z_stream_restore_context): new functions to save/restore ZStream
+	callback context
+
+2003-08-25  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/stackdump.c: liberalized system dependent functions a bit,
+	now we report maps dump and libc symbol dump on sparcs as well
+
+2003-07-28  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/thread.c: as GLib 2.0 does not abort when creating a thread
+	failed, we need to handle this case
+
+2003-07-24  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/stackdump.c: dump stack even if the ESP in the signal
+	context is NULL (and fall back to the address of a local variable)
+
+2003-07-18  Balazs Scheidler  <bazsi@balabit.balabit>
+
+        * src/cap.c: removed capability related messages as cap_to_text()
+	  is not reentrant and those messages are annoying anyway	
+
+2003-07-11  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/listen.c: maximize the number of accepted connections in a
+	single poll loop (currently 50)
+
+	* src/stream.c: removed z_stream_set_timeout_forward() function as
+	it is not used
+
+	* src/zorp/stream.h: changed z_stream_set_timeout() so it actually
+	works, and removed timeout type argument
+
+2003-07-02  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/thread.c: both threadpool based and simple thread support is
+	compiled in and is runtime configurable (via the use_threadpools
+	global variable)
+
+2003-07-01  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/misc.c: moved z_parse_interval code here (and renamed to
+	z_charset_parse), defined a couple of ZCharSet related functions
+
+2003-06-23  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* configure.in: again, check libcrypto before libcrypt to make
+	sure libcrypto is linked after libcrypt (I know it's insane)
+	
+2003-06-19  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* configure.in: don't check ssl/crypto libs again if already
+	found
+	
+	* configure.in: swap library checkings of ssl and crypto
+	
+2003-06-19  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/log.c (z_log_enabled): use an RW lock instead of a mutex to
+	protect the class_hash
+
+	* src/zorp/log.h (z_log): avoid warning when NULL is passed as
+	session_id (always call z_log_session_id)
+
+	* src/zorp.c (z_log_session_id): handle session_id[0]==0 case so
+	the function can be called from all z_log() invocations
+
+2003-06-16  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: added a couple of tests to make it easier to
+	compile on Solaris
+
+2003-06-16  Balint Abonyi   <abi@balabit.hu>
+
+	* src/ssl.c (ssl_session_new): windows implementation uses X509_STORE instead of files
+
+2003-06-13  Szalay Attila  <sasa@mochrul.balabit>
+
+	* src/zobject.c (z_object_unref): Bugfix. Unlock mutex before freeing self.
+
+2003-05-30  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* src/connect.[ch]: swap user_data and error parameters of
+	ZConnectFunc
+	
+2003-06-10  Szalay Attila  <sasa@mochrul.balabit>
+
+	* New script. Try to get all file cvs version and put it to /usr/share/docs/libzorpll
+
+2003-06-05  Balint Abonyi  <abi@balabit.hu>
+
+	* src/zorp/error.h:  ENOTTCONN implemented for Windows
+
+2003-06-04  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/streamssl.c: do not SSL_shutdown() an SSL connection twice
+
+	* src/streamssl.c: bugfix, return G_IO_STATUS_EOF in
+	z_stream_ssl_read when the stream was already shut down
+
+	* src/streambuf.c: renamed callback functions to conform to naming
+	scheme
+
+2003-05-30  Szalay Attila  <sasa@mochrul.balabit>
+
+	* src/random.c (z_random_sequence_get_bounded): Remove thread
+	private variables. Now use lock.
+
+2003-05-30  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* configure.in: swap search order of crypt and ssl routines
+	
+	* src/connect.c (z_io_connect_connected): added GError parameter
+	for connect callback
+	
+	* configure.in: use CFLAGS environment variable even if debug
+	mode turned on
+	
+2003-05-29  Balint Abonyi  <abi@balabit.hu>
+
+	* src/misc.c: z_crypt for windows implemented
+
+	* src/connect.c: g_source_destroy cleanup
+
+	* src/poll.c: g_source_destroy cleanup
+
+2003-05-29  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/stream.h (z_stream_get_nonblock): new inline function to
+	interface with ZST_CTRL_GET_NONBLOCK
+
+	* src/streamfd.c (ZST_CTRL_SET_NONBLOCK): fix in nonblock flag
+	handling, the original code did not query the old set of flags,
+	(ZST_CTRL_GET_NONBLOCK): also added a ctrl message to query
+	current blocking state
+
+	* src/misc.c: the function z_crypt was added
+
+2003-05-26  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/sockaddr.c (z_sockaddr_inet_new, z_sockaddr_inet_range_new):
+	check if the IP address is valid, and fail otherwise
+
+2003-05-20  Szalay Attila  <sasa@mochrul.balabit>
+
+	* src/socketsource.c (z_socket_source_check): Bugfix: Remember accept even till dispatch it.
+
+	* Various patches from windows port.
+
+2003-05-20  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/streamfd.c: the conversion to ZObject framework missed the
+	function z_stream_fd_watch_finalize
+
+	* src/streamline.c (z_stream_line_attach_source_method): make sure
+	that the priority of our source is only changed prior to attaching
+	to a context (caused a corrupt linked list in Context)
+
+2003-05-15  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/zobject.c (z_object_is_compatible, z_object_is_instance):
+	handle NULL pointers
+
+	* src/streamline.c: did stream separation
+
+2003-05-14  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/stream*.c: new, ZObject based ZStreams (the starting base
+	for ZStream reorg), CHANGES API (z_stream_new renamed to
+	z_stream_fd_new)
+
+	* src/misc.c (z_data_dump): moved from stream.c
+
+	* src/log.c (z_log_session_id): changed the return argument to
+	const gchar * to remove warning
+
+	* src/zorp/zobject.h: fixed a couple of cases when macro arguments
+	were evaluated multiple times
+
+	* src/streambuf.c (z_stream_buf_shutdown): flush buffers before
+	doing real shutdown
+
+2003-04-30  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/log.c (z_log_session): changed argument to const pointer (as
+	it triggered several warnings in ZAS
+
+2003-04-28  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/zobject.c, src/zorp/zobject.h: moved from zorp-core, the
+	files implement a generic OO-like framework with RTTI (to be used
+	for inter-proxy communication)
+
+2003-04-18  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* connect.c: fixed a reference and fdleak
+
+2003-02-28  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: bumped version number to 2.0.27 binary age 1
+
+2003-02-27  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/parser.c: added a couple of debug messages to help
+	discovering configuration file problems
+
+	* src/streamfd.c: changed data dump logging to use 'core.dump'
+	category
+
+2003-02-04  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/misc.c (z_process_ok): added (void) to prototype
+
+2003-02-03  Szalay Attila  <sasa@balabit.hu>
+
+	* src/log.c (z_log_set_session_id): New function. Set default
+	session_id to main thread.
+
+2002-11-25  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* src/misc.[ch] (z_str_escape, z_str_compress): allocate space
+	for trailing zero (EOS)
+	
+2002-11-25  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* src/misc.[ch] (z_str_escape, z_str_compress): new functions to
+	(un)escape space in a string
+	
+2003-01-30  Szalay Attila  <sasa@balabit.hu>
+
+	* src/misc.c: Change the behavior of daemonizing. Wait the child
+	process to be sure that it started.
+
+2003-01-30  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/streamline.c: changed 'Too long line' to 'Line too long',
+	and also added buffer contents to make it easier to recognize what
+	was in the buffer
+
+	* src/zorp/registry.h: changed a couple of gchar *  parameters to const
+
+2003-01-24  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* lib/sockaddr.c (z_sockaddr_format_unix): handle the case when
+	sockaddr_un has length of 2
+
+	* lib/parser.c: changed ZParser to be reference counted, kill
+	ZRealParser as no public interface is available
+
+	* added a couple of const declarations to function prototypes
+
+	* lib/socket.c (z_accept): workaround a linux 2.4.20 unix domain
+	socket problem
+
+2003-01-14  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: bumped version number to 2.0.22 binary age 4
+
+	* lib/parser.c: added functions for looking up specialized types
+	(_get_int, get_boolean etc.)
+
+2003-01-21  Szalay Attila  <sasa@balabit.hu>
+
+	* Include updates for windows platform. (Logging, better socket
+	handling, ...)
+
+2003-01-10  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* src/ssl.c (z_ssl_init): load all encryption methods
+	
+2003-01-09  Szalay Attila  <sasa@balabit.hu>
+
+	* src/memtrace.c (z_mem_trace_printf): Bugfix: Use local variable
+	in stack instead of global variable.
+
+2003-01-09  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/log.c, src/cap.c: updated function documentation
+
+	* src/listen.c: updated function documentation
+
+	* src/connect.c: updated function documentation
+
+2003-01-08  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/connect.c, src/listen.c: added new function
+	z_io_xxx_start_in_context() where the context to use for polling
+	can be specified,
+	(z_io_connect_start_block): establish the connection in blocking
+	mode (in fact it is done non-blocking and a private poll loop to
+	enable using the connection timeout)
+
+2003-01-02  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* added a couple of COPYRIGHT headers
+
+2002-12-30  Szalay Attila  <sasa@balabit.hu>
+
+	* src/streambuf.c (_ZStreamBuf): Bugfix. Create new variable,
+	buffer_lock, to lock buffer insert and remove.
+
+2002-12-16  Szalay Attila  <sasa@balabit.hu>
+
+	* src/streamline.c (z_stream_line_read_callback): First part of
+	stream separation.
+
+2002-12-12  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/source.c (ZTimeoutSource): interpret time argument in
+	milliseconds (it is used as milliseconds and was interpreted in
+	seconds)
+
+	* src/streamssl.c (z_stream_ssl_read_method,
+	z_stream_ssl_write_method): log SSL error reasons
+
+2002-12-11  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/connect.c: change all z_sockaddr_format buffers to have
+	length of MAX_SOCKADDR_STRING
+
+	* src/zorp/sockaddr.h: MAX_SOCKADDR_STRING new define for
+	z_sockaddr_format() string lengths
+
+2002-12-09  Szalay Attila  <sasa@balabit.hu>
+
+	* src/stream.c (z_stream_ref): Locking when changing stream
+	reference.
+
+2002-12-06  Szalay Attila  <sasa@balabit.hu>
+
+	* src/zorp/log.h: Tracing symbols doesn't depenq on libzorpll
+	compile options.
+
+2002-12-03  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: added --enable-threadpool parameter, bumped
+	version number to 2.0.12 age 7
+
+	* src/misc.c (z_zorplib_version_info): added threadpool information
+
+	* src/ssl.c: added a thread stop function which calls
+	ERR_remove_state(), so our thread implementation is independent
+	from SSL _AND_ thread specific error states are freed.
+
+	* src/thread.c: readded threadpool implementation, added
+	start_callbacks and stop_callbacks which are functions called
+	right before a thread starts, and right after it exits, this can
+	serve as a basis for removing SSL states, and to gather the number
+	of currently running threads for SZIG,
+	(z_thread_new): now it returns gboolean instead of GThread *,
+	joinable threads should be implemented differently. As nothing
+	else uses this interface, I don't change binary compatibility
+
+	* configure.in: bumped version number to 2.0.11 age 6
+
+	* src/misc.c (z_zorplib_version_info): added stackdump information
+
+	* src/stackdump.c, src/zorp/stackdump.h: added stackdump handling
+	to a single location, now includes portions of the stack (64*4
+	bytes), and also tries to resolve symbols
+
+	* configure.in: bumped version number to 2.0.10 age 5
+
+	* src/connect.c: fixed the race added while correcting connection
+	cancellation, using a source_id for determining wheather the
+	operation was cancelled contains an inherent race, as by the time
+	g_source_attach returns, the callback might already have been
+	called
+
+	* configure.in: bumped version number to 2.0.9 age 4
+
+	* src/ssl.c: fixed a couple of BIO bugs, in general
+	G_IO_STATUS_EOF was not handled, and G_IO_STATUS_ERROR was
+	sometimes returned as success
+
+	* src/listen.c: use self->lock to protect _cancel and _accepted
+	race, no user callbacks should be called if the connection was
+	cancelled (now it is guaranteed that no user callbacks are called
+	when _cancel had been called)
+
+	* src/connect.c: use self->lock to protect _cancel and _connected
+	race, no user callbacks should be called if the connection was
+	cancelled (now it is guaranteed that no user callbacks are called
+	when _cancel had been called)
+
+2002-11-26  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/source.c: added timeout source
+
+2002-11-25  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* src/source.c (z_threshold_source_set_threshold): new function
+	to set a threshold source
+
+2002-11-25  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/stream.c: removed poll timeout support completely, as the
+	whole idea was broken, a new source will be defined instead
+
+	* src/source.c (z_threshold_source_new): new function to
+	initialize a threshold source
+
+2002-11-25  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: bumped version number to 2.0.4, binary age 3
+
+	* src/source.c: fixed a problem in stream timeouts (poll_timeout
+	was checked in check & dispatch and poll_timeout_target should
+	have been)
+
+	* src/streamfd.c: report errors using %m instead of using GError,
+	GError transition is planned for 2.1
+
+2002-11-25  Szalay Attila  <sasa@balabit.hu>
+
+	* src/streamline.c (z_stream_line_read_callback):
+	Bugfix. Sctricting the states, when calling user callback.
+
+2002-11-21  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/streamfd.c: removed poll timeout implementation
+
+	* src/stream.c: poll timeout is now implemented in StreamSource
+	instead of in ZStreamFD, so poll timeout can be specified to any
+	of the streams
+
+	* src/stream.c, src/streamfd.c, src/streambuf.c, src/streamssl.c:
+	changed _ctrl message handling
+
+2002-11-18  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: changed to 4 digit version number, currently 2.0.0.0
+	fixes bug id 11
+
+2002-11-20  Szalay Attila  <sasa@balabit.hu>
+
+	* src/poll.c (z_poll_iter_timeout): Return from
+	z_poll_inter_timeout when EINTR occured.
+
+2002-11-18  Szalay Attila  <sasa@balabit.hu>
+
+	* Move core.session here from zorp-core.
+
+2002-11-15  Szalay Attila  <sasa@balabit.hu>
+
+	* src/streamline.c (z_stream_line_watch_check): Rewrite source
+	check conditions. (Doesn't try to call callback, when buffer is
+	full. It's not guessable in every state. It will called when
+	next character coming from network.)
+
+2002-11-14  Szalay Attila  <sasa@balabit.hu>
+
+	* src/streamline.c (z_stream_line_watch_check): Bugfix. Check if
+	self->pos is at end of buffer, becouse when this occur, there are
+	no full line.
+
+2002-11-13  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/misc.c (z_zorplib_version_info): return a string describing
+	zorplibll configure options, used by zorp to display its version
+	information
+
+	* configure.in: prefixed all ENABLE_ macros with ZORPLIB_, thus
+	ENABLE_MEMTRACE became ZORPLIB_ENABLE_MEMTRACE
+
+	* src/zorp/zorplib.h: removed CORE_POLICY macro, as it was moved
+	to zorp-core
+
+2002-11-12  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: bumped version number to 1.5.53, binary age 0
+
+	* lib/sockaddr.c: added a new parameter wildcard_clone to
+	z_sockaddr_clone functions, it is used to generate an address
+	suitable for binding with random port number selection (this
+	avoids having to explicitly reference SockAddrInet attributes)
+
+2002-11-11  Szalay Attila  <sasa@balabit.hu>
+
+	* src/log.c (z_log_source_new): Unset channel encoding. Close: #242
+
+2002-11-11  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* lib/zorp/log.h (z_log): added explicit '(' and ')' to ensure
+	precedence
+
+	* lib/streamfd.c: interpret poll_timeout in milliseconds instead
+	of in seconds
+
+2002-11-08  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/streamssl.c (z_stream_ssl_read_method &
+	z_stream_ssl_write_method): have a separate switch case for
+	SSL_ERROR_SYSCALL, and handle the case where errno is 0, as it can be
+	caused by server EOF, so take it as an EOF
+
+2002-11-08  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* configure.in: bumped version number to 1.5.51 binary age 2
+	
+	* src/parser.c (z_parser_check): new function
+	
+	* src/parser.h: change ZParserTag structure
+
+2002-11-06  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: bumped version number to 1.5.50 binary age 1
+
+	* src/zorp/streamfd.h (z_stream_set_nonblock): moved to stream.h
+
+	* src/zorp/stream.h (z_stream_set_nonblock): moved here
+
+2002-11-05  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/sockaddr.c (z_inet_aton): readded #ifdef HAVE_INET_ATON, and
+	alternative implementation (it was removed on Windows)
+
+	* src/log.c: cast the result of getpid() to int as it caused
+	warning on Solaris,
+	cast the argument of isalnum() from char to guchar as isalnum() is
+	implemented as an array lookup on solaris
+
+2002-10-28  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: bumped version number to 1.5.49 binary age 0
+
+	* src/socket.c (z_getdestname): new function, implementing
+	'transparent get original destination)
+
+	* src/socket.h (z_ll_getdestname): new function, calls the
+	function pointer socket_funcs->getdestname
+
+	* configure.in: bumped version number to 1.5.48 binary age 4
+
+2002-10-28  Szalay Attila  <sasa@balabit.hu>
+
+	* src/zorp/stream.h: Move SET_NONBLLOCK ctrl function to stream.h
+	from streamfd.h
+
+2002-10-25  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/ssl.c: initialize ZSSLSession->ref_cnt to 1
+
+2002-10-24  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/ssl.c (ZSSLSession): changed ZSSLSession to be reference counted,
+	(z_ssl_session_ref, z_ssl_session_unref): new functions,
+	(z_ssl_session_destroy): made a static private function
+
+2002-10-24  Szalay Attila  <sasa@balabit.hu>
+
+	* src/streamssl.c (z_stream_ssl_read_method): Do ssl renegotiation
+	transparent if needed.
+
+2002-10-22  Szalay Attila  <sasa@balabit.hu>
+
+	* src/streambuf.c (z_stream_buf_write_callback): Bugfix. Return
+	TRUE default.
+
+2002-10-10  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/poll.c (z_poll_iterm_timeout): call
+	g_main_context_dispatch() even in timeout, otherwise sources which
+	do not really poll have no chance to dispatch their events
+
+2002-10-10  Szalay Attila  <sasa@balabit.hu>
+
+	* Bumped to version 1.5.43 (AGE: 0)
+
+	* configure.in: Remove enable-packet-trace.
+
+	* src/streamssl.c: Use new callback function
+
+	* src/streamline.c: Use new callback function
+
+	* src/stream.h New callback function ctrl
+
+2002-10-09  Szalay Attila  <sasa@balabit.hu>
+
+	* src/stream.c (z_stream_source_finalize): use self->stream
+	instead of uninitialized stream
+
+2002-10-09  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/memtrace.c: increased temporary heap to 64k, implicitly
+	initialize the block hash on every malloc call, support realloc()
+	during initialization, verified that static programs do not work
+	with memtrace
+
+	* src/sockaddr.c (z_sockaddr_clone): new function, implemented as
+	a function pointer in sa_funcs,
+	(z_sockaddr_new_copy): obsolete function, removed
+
+	* src/poll.c: destroy the wakeup source
+
+	* src/listen.c: changes similar to what connect.c had, support
+	GDestroyNotify, added z_io_listen_cancel function
+
+	* src/connect.c: removed the use of free queues, as they are not
+	needed anymore
+
+2002-10-07  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: bumped version number to 1.5.42
+
+	* src/sockaddr.c: changed z_sockaddr_inet_get_port to support
+	ZSockAddrInetRange and return 0 as port number in this case,
+	(z_sockaddr_inet_check): new function to check whether a ZSockAddr
+	is compatible with ZSockAddrInet
+
+	* src/connect.c: added the possibility to assign a destroy notify
+	function to user_data,
+	(ZIOConnect): to avoid circular references the GSource is not
+	referenced by pointer, instead it is referenced by the id
+	(NOTE: glib does not handle the case when ids wrap around!, though
+	it's a 32 bit unsigned number)
+
+	* src/memtrace.c: added the define REALLY_TRACE_BT, which if
+	defined causes the addblock/delblock messages to include a
+	backtrace (makes zorp-memtrace.log huge!!)
+
+2002-10-02  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/zorp/log.h: added new macros z_session_enter,
+	z_session_leave, z_session_cp
+
+	* src/connect.c: changed the way ZIOConnect references
+	itself. Earlier it was assumed that the caller 'knows' when to
+	drop reference. (this caused quite a lot of problems in
+	pyconnect.c).  Now connect references itself as long as its source
+	is registered in the main loop. Thus it is not possible any more
+	to cancel the connection by calling z_io_connect_unref. To cancel
+	a connection a new function called z_io_connect_cancel was
+	introduced, and the caller is free to free ZIOConnect anytime it
+	wishes to. (it can also drop the reference immediately after
+	initialization)
+
+	* src/listen.c: changed refcounting similar to ZIOConnect
+
+2002-10-02  Szalay Attila  <sasa@balabit.hu>
+
+	* Bumped to version 1.5.41
+
+2002-10-01  Szalay Attila  <sasa@balabit.hu>
+
+	* src/streamline.c (z_stream_line_read_callback): Bugfix. Call
+	readline callbacks, when error occured.
+
+	* src/streamssl.c (z_stream_ssl_watch_check): Set streamssl source
+	to work, because ssl may buffer readed data.
+
+2002-09-30  Szalay Attila  <sasa@balabit.hu>
+
+	* src/streamline.c (z_stream_line_read_method): Bugfix. Move to
+	first position, if no data in buffer.
+
+2002-09-27  Szalay Attila  <sasa@balabit.hu>
+
+	* Bumped to version 1.5.40. Set Age to 0.
+
+	* src/memtrace.c (z_malloc): Remove * before raw_ptr and user_ptr.
+
+	* streambuf.c: streambuf set enable_write itself.
+
+2002-09-25  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/memtrace.c (z_free, z_realloc): first check if the block
+	exists, and then check canaries
+
+	* src/zorp/log.h: changed z_enter/z_leave messages (made them
+        shorter)
+
+2002-09-23  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/memtrace.c: support temporary heap on initial malloc() calls
+	(bugzilla id 1 & PR972)
+
+2002-09-20  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/streamfd.c: readded z_stream_set_nonblock (FIXME: needs to
+	be changed so every stream implementation has a chance to
+	implement non-blocking I/O)
+
+	* src/streamfd.c: added support for poll_timeout
+
+	* src/stream.c (z_stream_set_timeout_method): set s->poll_timeout
+	if Z_STREAM_TIMEOUT_POLL is specified
+
+2002-09-18  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* stream.c: moved z_stream_set_cond_method and
+	z_stream_set_callback_method here as they can be used by any
+	ZStream implementation,
+	(z_stream_set_timeout_method): new function to set poll & block
+	timeouts for streams,
+	(z_stream_set_timeout_forward): new function, forwards timeout set
+	requests to stream->parent
+
+	* streambuf.c: changed read, write & pri callback references to
+	read_cb, write_cb and pri_cb,
+	(z_stream_buf_set_cond_method): use z_stream_set_cond_method to
+	perform default actions of z_stream_set_cond,
+	(z_stream_buf_set_callback_method): -"-
+
+	* streamfd.c: -"-
+
+	* streamssl.c: -"-
+
+	* streamline.c: -"-, don't check readability if the user doesn't
+	want reading (check self->want_read)
+
+	* stream.h: added set_timeout callback
+
+	* ------
+
+	* src/Makefile.am: added streamfd.c
+
+	* src/poll.c (z_poll_stream_unref): call z_stream_detach_source
+	instead of z_source_stream_remove
+	(renamed function),
+	(z_poll_add_stream): call z_stream_attach_source instead of
+	z_source_stream_new (renamed function)
+
+	* src/stream.c: split into stream.c & streamfd.c, stream.c
+	contains implementation independent functions only, streamfd
+	implements the ZStream interface for unix fds,
+	(ZStreamSource): doesn't free associated GPollFD list when the
+	object is destroyed, the only place which was relying on this
+	behaviour has been changed
+
+	* src/streamfd.c: renamed ZStreamBase to ZStreamFD, now uses
+	ZStreamFuncs & don't touch source->poll_fds directly, don't rely
+	on ZStreamSource to free the registered GPollFD struct, use an
+	inline struct in ZStreamFD instead (no need to free it)
+
+	* src/streambuf.c: ported to ZStreamFuncs
+
+	* src/streamline.c: ported to ZStreamFuncs
+
+	* src/streamssl.c: ported to ZStreamFuncs
+
+	* src/stream.h: merged ZIOFuncs and function pointers in ZStream
+	into a single ZStreamFuncs structure, cleaned up naming
+	(z_source_stream_new & z_source_stream_remove changed to
+	z_stream_source_attach & z_stream_source_detach)
+
+2002-09-16  Szalay Attila  <sasa@balabit.hu>
+
+	* Bumped to version 1.5.36
+
+	* src/streamline.c, src/streambuf.c, src/streamssl.c: Bugfix.
+	Put parent to super.
+
+2002-09-12  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/stream.c (z_stream_init): new function to initialize
+	common attributes of a stream
+
+	* src/streamssl.c, src/streambuf.c, src/streamline.c: use the new
+	z_stream_init function instead of initializing common attributes
+	directly
+
+2002-09-12  Szalay Attila  <sasa@balabit.hu>
+
+	* Remove log facility define from c files.
+
+2002-09-10  Szalay Attila  <sasa@balabit.hu>
+
+	* src/memtrace.c (z_mem_trace_init): New parameter, set the name
+	of memtrace file
+
+	* src/random.c: Handle if genrated random number bigger than max.
+
+	* src/memtrace.c (z_mem_trace_dump): Check canaries in every
+	pointer
+
+	* src/memtrace.c (z_mem_trace_check_canaries): Log if canay
+	broken.
+
+	* Set the correct log facility and level in all log message
+
+2002-09-10  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/stream.c, src/streambuf.c, src/streamline.c, src/streamssl.c: 
+	applied to the changed dispatch interface
+
+	* src/zorp/stream.h: killed the last two arguments of the dispatch
+	callback (callback and user_data) as we don't use the callbacks
+	stored in our source, but have our own function pointers (in
+	ZStream)
+
+	* src/stream.c (z_stream_init): new function to initialize the
+	base fields in a ZStream, this function is to be called from
+	descendant ZStream implementations
+
+	* src/zorp/stream.h: moved a couple of member fields from
+	ZStreamBase to the general ZStream structure (time_open,
+	bytes_recvd and bytes_sent) as those are needed in descendants as
+	well
+
+2002-09-09  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/stream.c: the open duration of a stream is calculated
+	using difftime() instead of simply substracting the two numbers
+
+	* configure.in: bumped version number to 1.5.33 (age 0)
+
+	* src/zorp/stream.h (ZStreamFuncs): killed get_type method, use a
+	simple member of ZStream instead, z_stream_get_type is converted
+	to an inline function, this change has been applied to all stream
+	implementations
+
+2002-09-09  Szalay Attila  <sasa@balabit.hu>
+
+	* src/random.c (z_random_sequence_get_bounded): Bugfix. Use
+	g_static_private correctly.
+
+2002-09-05  Szalay Attila  <sasa@balabit.hu>
+
+	* Bumped to version 1.5.33
+	* src/log.c (z_log_init): Bugfix. If ZLF_THREAD is not set,
+	doesn't start new thread.
+
+2002-09-04  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: integrated win32 support
+
+	* src/error.c, src/zorp/error.h: platform independent error
+	support, it works for sockets on Win32 as well on Unix
+
+	* src/connect.c: use error functions from error.c, use
+	Z_SOCKEVENT_* constants instead of G_IO_* directly
+
+	* src/listen.c: use the error functions from error.c, use
+	Z_SOCKEVENT_* constants instead of G_IO_* directly
+
+	* src/io.c: limited support for Win32 sockets
+
+	* src/log.c: we don't use logging on Win32, therefore most of this
+	code is commented out on that platform
+
+	* src/misc.c (z_process_daemonize): win32 version
+
+	* src/parser.c: include <zorp/parser.h> instead of "parser.h"
+
+	* src/poll.c: use the new error functions, limited win32 support
+
+	* src/sockaddr.c: use the new error functions, limited win32 support
+
+	* src/socket.c: use the new error functions, limited win32 support
+	(new function z_socket_init is to be called on startup for
+	programs which support win32)
+
+	* src/socketsource.c: win32 support
+
+	* src/ssl.c: don't use dirent functions directly, use the portable
+	g_dir_* functions from glib instead
+
+	* src/stream.c: win32 support, NOTE: there are two win32
+	implementations for z_stream_wait_fd, why?
+
+	* src/stream.h (ZStream): added watch_finalize function pointer
+	(needed on Win32)
+
+2002-08-30  Szalay Attila  <sasa@balabit.hu>
+
+	* Bumped to version 1.5.31
+
+	* src/streambuf.c, src/streamline.c: Stacked streams now try to
+	search for their instance in the stream chain.
+
+2002-08-30  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/memtrace.c: updated memtrace implementation to use before
+	and after canaries, the backtrace is stored in a gpointer array,
+	and the log output includes a '0x' prefix (for Dani :)
+
+2002-08-28  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/log.c: fixed yet another bug in logging code, unified z_log_init
+	& log_log_init_thread, changed z_log_init parameters
+
+2002-08-27  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/log.c: fixed a couple of bugs in Sasa's new logthreading code
+
+	* configure.in: Bumped version number to 1.5.29
+
+	* src/streamline.c: changed z_stream_line_set_cond_method to
+	invoke z_stream_set_cond_method instead of duplicating work
+	here. NOTE: it might be possible to the same change in every
+	ZStream implementation
+
+	* src/stream.c: published two functions z_stream_set_cond_method &
+	z_stream_set_callback_method as they are useful for other stream
+	implementations as well
+
+2002-08-23  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/zorp/registry.h: changed registry constants to reflect
+	changes in Zorp (ZR_SPROXY is renamed back to ZR_PROXY, ZR_DPROXY
+	was removed, and ZR_DTRACK is renamed to ZR_CONNTRACK)
+
+2002-08-21  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/log.c, src/zorp/log.h: use thread private variable to fetch
+	current session id and use it if none is specified
+
+2002-08-21  Szalay Attila  <sasa@balabit.hu>
+
+	* Bumped to version 1.5.26
+	* Implement modifications for new UDP Core.
+
+2002-08-08  Szalay Attila  <sasa@balabit.hu>
+
+	* Bumped to version 1.5.25
+
+	* Rewrite random function.
+
+2002-07-31  Szalay Attila  <sasa@balabit.hu>
+
+	* src/connect.c (z_io_connect_start): Bugfix. Test to self->local
+	in log message. (May be NULL)
+
+2002-07-31  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: bumped version number to 1.5.24, binary age 5
+
+	* src/socketsource.c: implemented self->suspended,
+	z_socket_source_suspend and z_socket_source_resume
+
+	* src/connect.c, src/listen.c: self->watch became a GSource *
+	instead of guint, because source lookup by id is slow
+
+2002-07-29  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/connect.c, src/listen.c: implemented timeout possibility
+
+	* src/socketsource.c, src/zorp/socketsource.h: moved ZSource out
+	of source.c, and renamed to ZSocketSource, implemented timeout
+	possibility
+
+2002-07-26  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* lib/ssl.c: if verify_mode == SSL_VERIFY_NONE then do not verify
+	certificate (makes a lot of junk in log output)
+
+2002-07-24  Szalay Attila  <sasa@balabit.hu>
+
+	* src/memtrace.c: New entry point z_memtrace_init_file.
+
+2002-07-12  Szalay Attila  <sasa@balabit.hu>
+
+	* New flag. ENABLE_HEAP_TRACE, to detect off-by-one bugs and heap
+	corruptions.
+
+2002-07-01  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/socket.c (z_accept): handle EAGAIN by returning G_IO_STATUS_AGAIN
+
+2002-06-26  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/listen.c: forward ported multi accept feature (accept as
+	many connections at once as possible)
+
+	* configure.in: bumped version number to 1.5.19 binary age 0
+
+	* src/stream.c, src/streamline.c, src/streamssl.c: renamed
+	z_stream_set_way to z_stream_set_cond
+
+2002-06-25  Szalay Attila  <sasa@balabit.hu>
+
+	* src/log.c (z_fetch_stderr): Bugfix. Remove stderr from poll if
+	closed.
+
+2002-06-13  Szalay Attila  <sasa@balabit.hu>
+
+	* Bugfix: Close random string with 0. (chaoron)
+
+2002-06-12  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/connect.c: added an error message when z_io_connect_start is
+	called twice
+
+	* src/stream.c (z_stream_shutdown_method): handle the case when errno
+	is set to EINTR initially and is not touched by the successful
+	shutdown call
+
+2002-06-10  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: version bumped to 1.5.16, binary age 1
+
+	* src/poll.c: do not ref self->context twice4
+
+	* configure.in: version bumped to 1.5.15, binary age 0
+
+	* lib/connect.c: added a new debug message about connection initiation
+
+2002-06-07  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* lib/socket.c: reorganized for transparent proxying
+
+2002-06-07  Szalay Attila  <sasa@balabit.hu>
+
+	* poll.c: Bugfix. Free pollfd pointer vector.
+
+2002-06-02  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: version bumped to 1.5.14, binary age 1
+
+	* src/listen.c: change listen() to z_socket_listen()
+
+2002-05-30  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/sockaddr.c: moved z_bind, z_accept and z_connect into socket.c
+
+	* src/socket.c, src/zorp/socket.h: new files
+
+	* src/listen.c, src/connect.c: changed to use ZSocket internally
+	so Zorp can hook into socket related functions and provide
+	transparency, changed self->sock to ZSocket, self->sock was
+	renamed to self->poll and instead of allocating GPollFD
+	dynamically, include it in the structure
+
+	* src/Makefile.am: socket.c added
+
+2002-05-24  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* configure.in: cleaned up (hope it doesn't break anything)
+
+	* src/sysdep.c: removed, and moved to zorp-core
+
+2002-05-16  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/thread.c: remove SSL error state when a thread exits
+
+2002-05-10  Szalay Attila  <sasa@balabit.hu>
+
+	* src/source.c: New source, z_threshold_source
+
+2002-05-07  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/log.c: added more robust reopening of log socket (fixes
+	woody logging problems)
+	
+2002-04-25  Balazs Scheidler  <bazsi@balabit.balabit>
+
+	* src/misc.c: added an implementation for strlcpy if one is not present
+
+	* configure.in: added check for strlcpy
+
+2002-04-24  Szalay Attila  <sasa@balabit.hu>
+
+	* Rewrite poll to unref sources when quit.
+
+2002-04-05  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* src/misc: New functions z_random_sequence_get and
+	z_random_sequence_get_bounded. 
+
+2002-04-04  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* src/zorp/streamline.h: Added flag ZRL_PARTIAL_READ
+
+	* src/streamline.c (z_stream_line_watch_prepare): Handling ZRL_PARTIAL_READ flag.
+	(z_stream_line_watch_check):  Handling ZRL_PARTIAL_READ flag.
+	
+	* ChangeLog: some typos corrected and a false entry removed.
+
+2002-04-02  Szalay Attila  <sasa@balabit.hu>
+
+	* src/stream.c (z_stream_read_method): Bugfix: Don't try to dump
+	readed data, if read failed.
+	(z_stream_write_method): Same for writted data.
+
+	* src/poll.c (_ZPollSource): Enhance z_poll_wakeup with a
+	source. (Wakeup poll, even if not in poll _yet_.
+
+2002-03-29  Szalay Attila  <sasa@balabit.hu>
+
+	* src/log.c (z_logv): Normal messages logging with INFO level.
+
+2002-03-12  Szalay Attila  <sasa@balabit.hu>
+
+	* src/streamline.c (z_stream_line_unget_line): New
+	function. Used mainly in http proxy.
+
+2002-03-11  Szalay Attila  <sasa@balabit.hu>
+
+	* New function: z_poll_get_context
+
+	* API: API is now semistable.
+
+2001-10-24  Kishazi Daniel  <chaoron@balabit.hu>
+
+	* Upgrade: use GLib 1.3.9 except in io.[ch] and giossl.[ch]

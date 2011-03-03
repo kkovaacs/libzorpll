@@ -1,0 +1,44 @@
+#!/bin/bash
+
+CONFFILE=@sysconfdir@/libzorpll.conf
+
+if [ -r $CONFFILE ];
+then
+  . $CONFFILE
+
+  # exit gracefully if there isn't any email in the config file....
+  if [ -z "$ADMIN_EMAIL" ];then
+    exit 0
+  fi
+  Z_NAME=$1
+  Z_CHROOT_DIR=$2
+  Z_PIDFILE_DIR=$3
+  Z_PIDFILE=$4
+  Z_CWD=$5
+  Z_CAPS=$6
+  Z_EVENT=$7
+  Z_EVENT_ARG=$8
+  Z_ACTION=$9
+
+  SUBJECT=`eval echo $SUBJECT`
+
+  (
+  echo -e "From: $ADMIN_EMAIL\r"
+  echo -e "To: $ADMIN_EMAIL\r"
+  echo -e "Content-Type: text/plain; charset=iso-8859-2\r"
+  echo -e "Content-Transfer-Encoding: 8bit\r"
+  echo -e "Mime-Version: 1.0\r"
+  echo -e "Subject: $SUBJECT\r"
+  echo -e "\r"
+  echo -e "Failure notification\r"
+  echo -e "\r"
+  echo -e "Name:        $Z_NAME\r"
+  if [ -z "$Z_EVENT_ARG" ]; then
+    echo -e "Event:       $Z_EVENT\r"
+  else
+    echo -e "Event:       $Z_EVENT ($Z_EVENT_ARG)\r"
+  fi
+  echo -e "Action:      $Z_ACTION\r"
+  ) | sendmail -oi -bm $ADMIN_EMAIL
+fi;
+
