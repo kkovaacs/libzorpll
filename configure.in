@@ -416,14 +416,6 @@ AC_OUTPUT(
 Makefile
 dist.conf
 debian/Makefile
-solbuild/Makefile
-solbuild/rules.conf
-solbuild/pkginfo.lib
-solbuild/pkginfo.dev
-winbuild/Makefile
-winbuild/build.bat
-tgzbuild/Makefile
-tgz2build/Makefile
 src/libzorpll.rc
 src/Makefile
 src/zorp/Makefile
