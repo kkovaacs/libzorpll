@@ -9,11 +9,9 @@ depcomp
 install-sh
 ltmain.sh
 missing
+INSTALL
 scripts/Makefile.in
-solbuild/Makefile.in
 src/Makefile.in
 src/zorp/Makefile.in
 src/zorp/zorplibconfig.h.in
 tests/Makefile.in
-tgzbuild/Makefile.in
-winbuild/Makefile.in
